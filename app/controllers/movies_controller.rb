@@ -3,7 +3,37 @@ class MoviesController < ApplicationController
 
   # GET /movies or /movies.json
   def index
-    @movies = Movie.all
+    # Establish the full set of ratings for the view
+    @all_ratings = Movie.all_ratings
+
+    # Extract incoming params
+    params_ratings_keys = params[:ratings]&.keys
+    params_sort_by = params[:sort_by]
+
+    # If no params provided but we have session state, redirect to canonical URL with stored params
+    if (params[:ratings].blank? && session[:ratings].present?) || (params[:sort_by].blank? && session[:sort_by].present?)
+      redirect_to movies_path(ratings: session[:ratings], sort_by: session[:sort_by]) and return
+    end
+
+    # Compute ratings to show: default to all if none provided
+    @ratings_to_show = if params_ratings_keys.present?
+                         params_ratings_keys
+                       else
+                         @all_ratings
+                       end
+
+    # Persist current choices in session for later visits
+    session[:ratings] = @ratings_to_show.index_with { |_r| "1" }
+    session[:sort_by] = params_sort_by if params_sort_by.present?
+
+    # Build the base relation using ratings filter
+    @movies = Movie.with_ratings(@ratings_to_show)
+
+    # Apply sort if provided and allowed
+    if %w[title release_date].include?(params_sort_by)
+      @sort_by = params_sort_by
+      @movies = @movies.order(@sort_by)
+    end
   end
 
   # GET /movies/1 or /movies/1.json
