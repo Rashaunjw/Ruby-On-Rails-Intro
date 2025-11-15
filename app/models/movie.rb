@@ -10,5 +10,11 @@ class Movie < ActiveRecord::Base
     return all if ratings_list.nil? || ratings_list.empty?
     where(rating: ratings_list)
   end
+
+  # Returns movies with the same director, excluding the current movie
+  def others_by_same_director
+    return Movie.none if director.blank?
+    Movie.where(director: director).where.not(id: id)
+  end
 end
 

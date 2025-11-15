@@ -1,0 +1,18 @@
+<h1>Movies with same director as <%= @movie.title %></h1>
+
+<p>
+  <strong>Director:</strong>
+  <%= @movie.director %>
+</p>
+
+<div id="movies">
+  <% @movies.each do |movie| %>
+    <%= render movie %>
+    <p>
+      <%= link_to "Show this movie", movie %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "Back to movies", movies_path %>
+

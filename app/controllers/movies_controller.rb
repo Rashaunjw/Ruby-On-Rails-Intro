@@ -40,6 +40,17 @@ class MoviesController < ApplicationController
   def show
   end
 
+  # GET /movies/1/similar
+  def similar
+    @movie = Movie.find(params[:id])
+    if @movie.director.blank?
+      flash[:warning] = "#{@movie.title} has no director info"
+      redirect_to movies_path
+    else
+      @movies = @movie.others_by_same_director
+    end
+  end
+
   # GET /movies/new
   def new
     @movie = Movie.new
@@ -95,6 +106,6 @@ class MoviesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def movie_params
-      params.require(:movie).permit(:title, :rating, :description, :release_date)
+      params.require(:movie).permit(:title, :rating, :description, :release_date, :director)
     end
 end
