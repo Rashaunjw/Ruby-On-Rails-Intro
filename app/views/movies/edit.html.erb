@@ -1,10 +1,7 @@
-<h1>Editing movie</h1>
+<div class="container">
+  <div class="page-header mb-4">
+    <h1><i class="bi bi-pencil"></i> Edit Movie</h1>
+  </div>
 
-<%= render "form", movie: @movie %>
-
-<br>
-
-<div>
-  <%= link_to "Show this movie", @movie %> |
-  <%= link_to "Back to movies", movies_path %>
+  <%= render "form", movie: @movie %>
 </div>

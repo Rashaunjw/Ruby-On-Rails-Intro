@@ -1,27 +1,31 @@
-<div id="<%= dom_id movie %>">
-  <p>
-    <strong>Title:</strong>
+<div id="<%= dom_id movie %>" class="movie-card">
+  <div class="movie-card-header">
     <%= movie.title %>
-  </p>
-
-  <p>
-    <strong>Rating:</strong>
-    <%= movie.rating %>
-  </p>
-
-  <p>
-    <strong>Description:</strong>
-    <%= movie.description %>
-  </p>
-
-  <p>
-    <strong>Release date:</strong>
-    <%= movie.release_date %>
-  </p>
-
-  <p>
-    <strong>Director:</strong>
-    <%= movie.director %>
-  </p>
-
+  </div>
+  <div class="movie-card-body">
+    <div class="movie-detail">
+      <span class="movie-detail-label">Rating:</span>
+      <span class="movie-detail-value">
+        <span class="rating-badge rating-<%= movie.rating %>"><%= movie.rating %></span>
+      </span>
+    </div>
+    <% if movie.director.present? %>
+      <div class="movie-detail">
+        <span class="movie-detail-label">Director:</span>
+        <span class="movie-detail-value"><%= movie.director %></span>
+      </div>
+    <% end %>
+    <% if movie.release_date.present? %>
+      <div class="movie-detail">
+        <span class="movie-detail-label">Release Date:</span>
+        <span class="movie-detail-value"><%= movie.release_date.strftime("%B %d, %Y") if movie.release_date %></span>
+      </div>
+    <% end %>
+    <% if movie.description.present? %>
+      <div class="movie-detail">
+        <span class="movie-detail-label">Description:</span>
+        <span class="movie-detail-value"><%= movie.description %></span>
+      </div>
+    <% end %>
+  </div>
 </div>

@@ -1,42 +1,68 @@
-<%= form_with(model: movie) do |form| %>
-  <% if movie.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(movie.errors.count, "error") %> prohibited this movie from being saved:</h2>
+<div class="form-container">
+  <%= form_with(model: movie, local: true, class: 'needs-validation', novalidate: true) do |form| %>
+    <% if movie.errors.any? %>
+      <div class="alert alert-danger" role="alert">
+        <h5 class="alert-heading"><i class="bi bi-exclamation-triangle"></i> <%= pluralize(movie.errors.count, "error") %> prohibited this movie from being saved:</h5>
+        <ul class="mb-0">
+          <% movie.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
-      <ul>
-        <% movie.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+    <div class="mb-3">
+      <%= form.label :title, class: "form-label" do %>
+        <i class="bi bi-film"></i> Title
+      <% end %>
+      <%= form.text_field :title, class: "form-control", required: true %>
+      <div class="invalid-feedback">
+        Please provide a title.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :rating, class: "form-label" do %>
+        <i class="bi bi-star"></i> Rating
+      <% end %>
+      <%= form.select :rating, 
+                      options_for_select([
+                        ["G", "G"],
+                        ["PG", "PG"],
+                        ["PG-13", "PG-13"],
+                        ["R", "R"]
+                      ], movie.rating),
+                      { include_blank: "Select a rating" },
+                      { class: "form-select", required: true } %>
+      <div class="invalid-feedback">
+        Please select a rating.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :director, class: "form-label" do %>
+        <i class="bi bi-person"></i> Director
+      <% end %>
+      <%= form.text_field :director, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :release_date, class: "form-label" do %>
+        <i class="bi bi-calendar"></i> Release Date
+      <% end %>
+      <%= form.date_field :release_date, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :description, class: "form-label" do %>
+        <i class="bi bi-card-text"></i> Description
+      <% end %>
+      <%= form.text_area :description, class: "form-control", rows: 4 %>
+    </div>
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <%= link_to "Cancel", movies_path, class: "btn btn-secondary me-md-2" %>
+      <%= form.submit (movie.new_record? ? "Create Movie" : "Update Movie"), class: "btn btn-primary" %>
     </div>
   <% end %>
-
-  <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
-  </div>
-
-  <div>
-    <%= form.label :rating, style: "display: block" %>
-    <%= form.text_field :rating %>
-  </div>
-
-  <div>
-    <%= form.label :description, style: "display: block" %>
-    <%= form.text_field :description %>
-  </div>
-
-  <div>
-    <%= form.label :release_date, style: "display: block" %>
-    <%= form.text_field :release_date %>
-  </div>
-
-  <div>
-    <%= form.label :director, style: "display: block" %>
-    <%= form.text_field :director %>
-  </div>
-
-  <div>
-    <%= form.submit %>
-  </div>
-<% end %>
+</div>

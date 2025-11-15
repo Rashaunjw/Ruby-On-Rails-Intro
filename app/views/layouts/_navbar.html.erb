@@ -1,0 +1,25 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+  <div class="container-fluid">
+    <%= link_to movies_path, class: "navbar-brand fw-bold" do %>
+      <i class="bi bi-film"></i> RottenPotatoes
+    <% end %>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <%= link_to movies_path, class: "nav-link #{'active fw-bold' if controller_name == 'movies' && ['index', 'show', 'similar'].include?(action_name)}" do %>
+            <i class="bi bi-list-ul"></i> All Movies
+          <% end %>
+        </li>
+        <li class="nav-item">
+          <%= link_to new_movie_path, class: "nav-link #{'active fw-bold' if controller_name == 'movies' && ['new', 'create', 'edit', 'update'].include?(action_name)}" do %>
+            <i class="bi bi-plus-circle"></i> Add Movie
+          <% end %>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+

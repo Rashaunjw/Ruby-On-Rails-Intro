@@ -1,41 +1,99 @@
-<p style="color: green"><%= notice %></p>
-
-<% if flash[:warning] %>
-  <div class="alert alert-warning">
-    <%= flash[:warning] %>
-  </div>
-<% end %>
-
-<h1>Movies</h1>
-
-<%= form_tag movies_path, method: :get, id: 'ratings_form', local: true do %>
-  <% @all_ratings.each do |rating| %>
-    <div class="form-check  form-check-inline">
-      <%= check_box_tag "ratings[#{rating}]", "1", @ratings_to_show.include?(rating), class: 'form-check-input' %>
-      <%= label_tag "ratings[#{rating}]", rating, class: 'form-check-label' %>
+<div class="container">
+  <% if notice %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <i class="bi bi-check-circle"></i> <%= notice %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   <% end %>
 
-  <div>
-    <label class="form-label me-2" for="sort_by">Sort by:</label>
-    <%= select_tag :sort_by,
-                   options_for_select([["Title", "title"],
-                                       ["Release date", "release_date"]],
-                                       @sort_by),
-                   id:    "sort_by",
-                   class: "form-select d-inline w-auto" %>
+  <% if flash[:warning] %>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <i class="bi bi-exclamation-triangle"></i> <%= flash[:warning] %>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  <% end %>
+
+  <div class="page-header mb-4">
+    <h1><i class="bi bi-film"></i> Movies</h1>
   </div>
 
-  <%= submit_tag 'Refresh', id: 'ratings_submit', class: 'btn btn-primary' %>
-<% end %>
+  <div class="filter-section">
+    <%= form_tag movies_path, method: :get, id: 'ratings_form', class: 'row g-3' do %>
+      <div class="col-12">
+        <h5><i class="bi bi-funnel"></i> Filter by Rating</h5>
+        <div class="d-flex flex-wrap gap-3 mb-3">
+          <% @all_ratings.each do |rating| %>
+            <div class="form-check">
+              <%= check_box_tag "ratings[#{rating}]", "1", @ratings_to_show.include?(rating), class: 'form-check-input', id: "rating_#{rating}" %>
+              <%= label_tag "rating_#{rating}", rating, class: "form-check-label rating-badge rating-#{rating}" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
 
-<div id="movies">
-  <% @movies.each do |movie| %>
-    <%= render movie %>
-    <p>
-      <%= link_to "Show this movie", movie %>
-    </p>
+      <div class="col-md-6">
+        <label class="form-label" for="sort_by"><i class="bi bi-sort-alpha-down"></i> Sort by:</label>
+        <%= select_tag :sort_by,
+                       options_for_select([["Title", "title"],
+                                           ["Release date", "release_date"]],
+                                           @sort_by),
+                       id:    "sort_by",
+                       class: "form-select",
+                       include_blank: "None" %>
+      </div>
+
+      <div class="col-12">
+        <%= submit_tag 'Apply Filters', id: 'ratings_submit', class: 'btn btn-primary' %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @movies.any? %>
+    <div class="movies-grid">
+      <% @movies.each do |movie| %>
+        <div class="movie-card">
+          <div class="movie-card-header">
+            <%= movie.title %>
+          </div>
+          <div class="movie-card-body">
+            <div class="movie-detail">
+              <span class="movie-detail-label">Rating:</span>
+              <span class="movie-detail-value">
+                <span class="rating-badge rating-<%= movie.rating %>"><%= movie.rating %></span>
+              </span>
+            </div>
+            <% if movie.director.present? %>
+              <div class="movie-detail">
+                <span class="movie-detail-label">Director:</span>
+                <span class="movie-detail-value"><%= movie.director %></span>
+              </div>
+            <% end %>
+            <% if movie.release_date.present? %>
+              <div class="movie-detail">
+                <span class="movie-detail-label">Release Date:</span>
+                <span class="movie-detail-value"><%= movie.release_date.strftime("%B %d, %Y") if movie.release_date %></span>
+              </div>
+            <% end %>
+            <% if movie.description.present? %>
+              <div class="movie-detail">
+                <span class="movie-detail-label">Description:</span>
+                <span class="movie-detail-value"><%= truncate(movie.description, length: 100) %></span>
+              </div>
+            <% end %>
+            <div class="mt-3">
+              <%= link_to movie, class: 'btn btn-sm btn-primary' do %>
+                <i class="bi bi-eye"></i> View Details
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <i class="bi bi-film"></i>
+      <h3>No movies found</h3>
+      <p>Try adjusting your filters or <%= link_to "add a new movie", new_movie_path %>.</p>
+    </div>
   <% end %>
 </div>
-
-<%= link_to "New movie", new_movie_path %>
